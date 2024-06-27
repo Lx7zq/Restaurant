@@ -1,19 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 
-const Restaurant = () => {
-  const [restaurants,SetRestaurant] = useState([]);
-
-   useEffect(() => {
-     fetch("http://localhost:3000/Restaurant")
-       .then((res) => res.json())
-       .then((response) => {
-         SetRestaurant(response);
-       })
-       .catch((err) => {
-         console.log(err.message);
-       });
-   }, []);
-
+const Restaurant = ({ restaurants }) => {
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 rounded-md border-gray-400">
       {restaurants.map((box) => (
@@ -25,6 +12,7 @@ const Restaurant = () => {
             <img
               className="w-full h-auto hover:scale-125 scale-100 transition-all delay-100 duration-100 hover:rounded-lg"
               src={box.image}
+              alt={box.name}
             />
           </a>
           <div className="p-5">
@@ -55,7 +43,7 @@ const Restaurant = () => {
             <div className="flex justify-end">
               <a
                 href="#"
-                className="inline-flex items-center px-4 py-2 text-sm font-semibold font-medium transition dark:text-white text-gray-200 ease-in-out delay-150 bg-blue-500 hover:-translate-y-1 hover:scale-110 hover:bg-indigo-500 duration-300 rounded-xl"
+                className="inline-flex items-center px-4 py-2 text-sm font-semibold  transition dark:text-white text-gray-200 ease-in-out delay-150 bg-blue-500 hover:-translate-y-1 hover:scale-110 hover:bg-indigo-500 duration-300 rounded-xl"
               >
                 Read more
                 <svg
