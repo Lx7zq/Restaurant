@@ -1,6 +1,21 @@
 import React from "react";
 
+
 const Restaurant = ({ restaurants }) => {
+  const hadleDelete = async(id) =>{
+     try {
+      const response = await fetch("http://localhost:3000/Restaurant/"+id, {
+       
+        method: "DELETE",
+      });
+      if (response.ok) {
+        alert("Restaurant"+id+" DELETE successfully! ");
+       window.location.reload();
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 rounded-md border-gray-400">
       {restaurants.map((box) => (
@@ -41,11 +56,32 @@ const Restaurant = ({ restaurants }) => {
               </div>
             </p>
             <div className="flex justify-end">
-              <a
-                href="#"
+              <button
+                onClick={()=>hadleDelete(box.id)}
                 className="inline-flex items-center px-4 py-2 text-sm font-semibold  transition dark:text-white text-gray-200 ease-in-out delay-150 bg-blue-500 hover:-translate-y-1 hover:scale-110 hover:bg-indigo-500 duration-300 rounded-xl"
               >
-                Read more
+                Delete
+                <svg
+                  className="rtl:rotate-180 w-3.5 h-3.5 ml-2"
+                  aria-hidden="true"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 14 10"
+                >
+                  <path
+                    stroke="currentColor"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M1 5h12m0 0L9 1m4 4L9 9"
+                  />
+                </svg>
+              </button>
+              <a
+                href={`/Edit/${box.id}`}
+                className="inline-flex items-center px-4 py-2 text-sm font-semibold  transition dark:text-white text-gray-200 ease-in-out delay-150 bg-blue-500 hover:-translate-y-1 hover:scale-110 hover:bg-indigo-500 duration-300 rounded-xl"
+              >
+                Edit
                 <svg
                   className="rtl:rotate-180 w-3.5 h-3.5 ml-2"
                   aria-hidden="true"

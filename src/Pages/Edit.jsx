@@ -1,27 +1,39 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState,useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom";
 
-const Add = () => {
+const Edit = () => {
+    const {id} = useParams();
   const [restaurant, setRestaurant] = useState({
     name: "",
     description: "",
     image: "",
   });
-  const handleChange = (e) =>{
-    const {name,value} = e.target;
-    setRestaurant({...restaurant,[name]:value})
-  }
+  useEffect(()=>{
+     fetch("http://localhost:3000/Restaurant/"+id)
+      .then((res) => res.json())
+      .then((response) => {
+        setRestaurant(response);
+      })
+      .catch((err) => {
+        console.log(err.message);
+      });
+  }, [id]);
   const navigate = useNavigate();
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setRestaurant({ ...restaurant, [name]: value });
+  };
 
-  const handSubmit = async () =>{
+  const handSubmit = async () => {
     try {
-      const response = await fetch("http://localhost:3000/Restaurant",{
-        method: "POST",
+      const response = await fetch("http://localhost:3000/Restaurant/"+id, {
+       
+        method: "PUT",
         body: JSON.stringify(restaurant),
       });
-      if(response.ok){
-        alert("Restaurant added successfully! ");
-        navigate("/")
+      if (response.ok) {
+        alert("Restaurant Edit successfully! ");
+        navigate("/");
         setRestaurant({
           name: "",
           description: "",
@@ -31,7 +43,7 @@ const Add = () => {
     } catch (error) {
       console.log(error);
     }
-  }
+  };
   return (
     <div className="w-96  items-center ">
       <label className="input input-bordered flex items-center gap-2">
@@ -77,4 +89,4 @@ const Add = () => {
   );
 };
 
-export default Add;
+export default Edit;
