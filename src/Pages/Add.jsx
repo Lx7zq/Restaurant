@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 
@@ -21,7 +21,7 @@ const Add = () => {
 
   // ฟังก์ชัน handleSubmit เพื่อส่งข้อมูลร้านอาหารไปยังเซิร์ฟเวอร์
   const handleSubmit = async (e) => {
-    e.preventDefault(); // ป้องกันการส่งฟอร์มตามวิธีการเริ่มต้น
+    e.preventDefault(); // ใช้เพื่อไม่ให้ browser refresh
     try {
       const response = await fetch("http://localhost:3000/Restaurant", {
         method: "POST",
@@ -46,7 +46,7 @@ const Add = () => {
           }); // เคลียร์ข้อมูลในฟอร์มหลังจากเพิ่มเสร็จ
         });
       } else {
-        // แสดงแจ้งเตือนเมื่อมีข้อผิดพลาดในการเพิ่มร้านอาหาร
+        // แจ้งเตือนเมื่อมีข้อผิดพลาดในการเพิ่มร้านอาหาร
         Swal.fire({
           title: "เกิดข้อผิดพลาด!",
           text: "ไม่สามารถเพิ่มร้านอาหารได้",
@@ -54,14 +54,16 @@ const Add = () => {
         });
       }
     } catch (error) {
-      console.log(error); // แสดง error ใน console ถ้ามีข้อผิดพลาดในการ fetch
+      console.log(error);
     }
   };
 
   return (
     <div className="flex justify-center items-center min-h-screen bg-gray-100">
       <div className="w-full max-w-md p-6 bg-white rounded-lg shadow-md">
-        <form>
+        <form onSubmit={handleSubmit}>
+          {" "}
+          {/* ใช้ onSubmit แทน onClick ใน form */}
           <label className="block mb-4">
             <span className="text-gray-700">Name</span>
             <input
@@ -98,8 +100,10 @@ const Add = () => {
               required
             />
           </label>
-          <button className="w-full btn btn-success" onClick={handSubmit}>
-            Success
+          <button type="submit" className="w-full btn btn-success">
+            {" "}
+            {/* ใช้ type="submit" แทน onClick */}
+            Add Restaurant
           </button>
         </form>
       </div>
