@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import RestuarantService from "../services/restaurant.service";
 import Swal from "sweetalert2";
 
 const Edit = () => {
@@ -9,20 +10,17 @@ const Edit = () => {
   // สร้าง state เพื่อเก็บข้อมูลร้านอาหารที่จะแก้ไข
   const [restaurant, setRestaurant] = useState({
     name: "",
-    description: "",
-    image: "",
+    type: "",
+    ImageUrl: "",
   });
 
   // useEffect เรียกใช้งานหลังจาก component นี้ถูก render เพื่อดึงข้อมูลร้านอาหารจากเซิร์ฟเวอร์
   useEffect(() => {
-    fetch("http://localhost:3000/Restaurant/" + id)
-      .then((res) => res.json())
-      .then((response) => {
-        setRestaurant(response); // เซ็ตข้อมูลร้านอาหารให้กับ state
-      })
-      .catch((err) => {
-        console.log(err.message); // แสดง error ใน console หากมีข้อผิดพลาดในการ fetch
-      });
+    RestuarantService.getrestaurantByID(id).then((response) => {
+      if (response.status === 200) {
+        setRestaurant(response.data);
+      }
+    });
   }, [id]); // ใช้ id เป็น dependency เพื่อให้ useEffect เรียกใช้ใหม่เมื่อ id เปลี่ยน
 
   // เรียกใช้ hook เพื่อให้สามารถเปลี่ยนเส้นทางการนำทางได้หลังจากแก้ไขข้อมูลเสร็จ
@@ -38,27 +36,21 @@ const Edit = () => {
   // ฟังก์ชัน handSubmit เมื่อมีการส่งฟอร์มแก้ไขข้อมูลร้านอาหาร
   const handSubmit = async () => {
     try {
-      const response = await fetch("http://localhost:3000/Restaurant/" + id, {
-        method: "PUT", // ใช้เมธอด PUT เพื่อแก้ไขข้อมูลในเซิร์ฟเวอร์
-        body: JSON.stringify(restaurant), // ส่งข้อมูลร้านอาหารเป็น JSON
-      });
-      if (response.ok) {
-        // แสดงแจ้งเตือนเมื่อแก้ไขข้อมูลร้านอาหารสำเร็จ
+      const response = await RestuarantService.editRestaurant(id, restaurant);
+      if (response.status === 200) {
         Swal.fire({
-          title: "เรียบร้อย!",
-          text: "คุณได้แก้ไขข้อมูลแล้ว",
+          title: "Restaurant update",
+          text: response.data.message,
           icon: "success",
-          confirmButtonText: "ตกลง",
         });
-        navigate("/"); // เปลี่ยนเส้นทางไปยังหน้าหลัก
-        setRestaurant({
-          name: "",
-          description: "",
-          image: "",
-        }); // เคลียร์ข้อมูลในฟอร์มหลังจากแก้ไขเสร็จ
+        navigate("/");
       }
     } catch (error) {
-      console.log(error); // แสดง error ใน console ถ้ามีข้อผิดพลาดในการ fetch
+      Swal.fire({
+        icon: "error",
+        title: "Restaurant update",
+        text: error.response?.data?.message || error.message,
+      });
     }
   };
 
@@ -81,11 +73,11 @@ const Edit = () => {
           <span className="text-gray-700">Description</span>
           <input
             type="text"
-            name="description"
-            value={restaurant.description}
+            name="type"
+            value={restaurant.type}
             onChange={handleChange}
             className="form-input mt-1 block w-full border-gray-300 rounded-md shadow-sm"
-            placeholder="Description"
+            placeholder="type"
             required
           />
         </label>
@@ -94,7 +86,7 @@ const Edit = () => {
           <input
             type="text"
             name="image"
-            value={restaurant.image}
+            value={restaurant.ImageUrl}
             onChange={handleChange}
             className="form-input mt-1 block w-full border-gray-300 rounded-md shadow-sm"
             placeholder="Image URL"

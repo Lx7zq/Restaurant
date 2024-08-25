@@ -1,9 +1,12 @@
 import { createBrowserRouter } from "react-router-dom";
-import Home from "../Pages/Home";
-import Add from "../Pages/Add";
-import Edit from "../Pages/Edit";
-import Login from "../Pages/Login";
-import Register from "../Pages/Register";
+import { lazy } from "react";
+
+// Lazily load pages for better performance
+const Home = lazy(() => import("../Pages/Home"));
+const Add = lazy(() => import("../Pages/Add"));
+const Edit = lazy(() => import("../Pages/Edit"));
+const Login = lazy(() => import("../Pages/Login"));
+const Register = lazy(() => import("../Pages/Register"));
 
 const router = createBrowserRouter([
   {
@@ -15,15 +18,15 @@ const router = createBrowserRouter([
     element: <Add />,
   },
   {
-    path: "/Edit/:id",
+    path: "/edit/:id",
     element: <Edit />,
   },
   {
-    path: "/Login",
+    path: "/login",
     element: <Login />,
   },
   {
-    path: "/Register",
+    path: "/register",
     element: <Register />,
   },
 ]);

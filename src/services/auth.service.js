@@ -1,4 +1,5 @@
 import api from "./api";
+import axios from "axios";
 import Tokenservice from "./token.service";
 
 const API_URL = "/api/v1/auth";
@@ -14,11 +15,19 @@ const login = async (username,password) =>{
     localStorage.setItem("user", JSON.stringify(response));
   }
   return response;
+
 }
+
+const logout = () => {
+  localStorage.removeItem("accessToken");
+  localStorage.removeItem("user");
+  // You may also want to handle token invalidation on the server side if needed
+};
 
 const AuthService = {
   register,
   login,
+  logout,
 };
 
 export default AuthService;

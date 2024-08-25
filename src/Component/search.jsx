@@ -1,69 +1,59 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 const Search = ({ restaurants, setFilteredRestaurants }) => {
   const [keyword, setKeyword] = useState("");
 
-  const handleChange = (e) => {
-    const searchKeyword = e.target.value.toLowerCase();
-    setKeyword(searchKeyword);
-
-    if (!searchKeyword) {
+  useEffect(() => {
+    if (keyword === "") {
       setFilteredRestaurants(restaurants);
       return;
     }
 
-    const filtered = restaurants.filter(
-      (restaurant) =>
-        restaurant.name.toLowerCase().includes(searchKeyword) ||
-        restaurant.description.toLowerCase().includes(searchKeyword)
-    );
+    const result = restaurants.filter((restaurant) => {
+      const name = restaurant.name ? restaurant.name.toLowerCase() : "";
+      const type = restaurant.type ? restaurant.type.toLowerCase() : "";
+      const searchKeyword = keyword.toLowerCase();
 
-    setFilteredRestaurants(filtered);
+      return name.includes(searchKeyword) || type.includes(searchKeyword);
+    });
+
+    setFilteredRestaurants(result);
+  }, [keyword, restaurants, setFilteredRestaurants]);
+
+  const handleChange = (e) => {
+    setKeyword(e.target.value);
   };
 
   return (
-    <form className="w-full p-2">
-      <label
-        htmlFor="default-search"
-        className="mb-2 text-sm font-medium text-white sr-only dark:text-white"
-      >
-        Search
-      </label>
-      <div className="relative">
-        <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-          <svg
-            className="w-4 h-4 text-gray-500 dark:text-gray-400"
-            aria-hidden="true"
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 20 20"
-          >
-            <path
-              stroke="currentColor"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
-            />
-          </svg>
-        </div>
+    <div className="w-full flex justify-center py-4">
+      <label className="flex items-center w-5/6 max-w-lg bg-white rounded-full shadow-lg">
         <input
-          type="search"
-          value={keyword}
+          type="text"
+          className="flex-grow px-4 py-2 text-gray-700 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+          placeholder="Search restaurants by name or type..."
           onChange={handleChange}
-          id="default-search"
-          className="block w-full p-4 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-          placeholder="Search Restaurants..."
-          required
+          value={keyword}
+          aria-label="Search for restaurants"
         />
         <button
-          type="submit"
-          className="text-white absolute right-2.5 bottom-2.5 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+          type="button"
+          className="flex items-center justify-center p-2 text-gray-500 focus:outline-none"
         >
-          Search
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 16 16"
+            fill="currentColor"
+            className="w-5 h-5 opacity-70"
+          >
+            <path
+              fillRule="evenodd"
+              d="M9.965 11.026a5 5 0 1 1 1.06-1.06l2.755 2.754a.75.75 0 1 1-1.06 1.06l-2.755-2.754ZM10.5 7a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0Z"
+              clipRule="evenodd"
+            />
+          </svg>
         </button>
-      </div>
-    </form>
+      </label>
+    </div>
   );
 };
 

@@ -3,9 +3,10 @@ import Add from "../Pages/Add";
 import UserProfile from "./UserProfile";
 import LoginButton from "./LoginButton";
 import RegisterButton from "./RegisterButton";
+import { useAuthContext } from "../context/AuthContext";
 
 const Navbar = () => {
-  const user = null;
+  const { user, logout } = useAuthContext();
   return (
     <div className="navbar bg-base-100">
       <div className="navbar-start">
@@ -46,7 +47,19 @@ const Navbar = () => {
       </div>
       <div className="navbar-end">
         {user ? (
-          <UserProfile />
+          <>
+            <div className="flex items-center space-x-2">
+              <span className="text-gray-900 dark:text-white">
+                Welcome, <span className="text-red-500">{user.username}</span>
+              </span>
+              {user.roles.map((role, index) => (
+                <div key={index} className="badge text-xs badge-accent">
+                  {role}
+                </div>
+              ))}
+            </div>
+            <UserProfile />
+          </>
         ) : (
           <div className="space-x-2">
             <RegisterButton />
